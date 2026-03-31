@@ -255,14 +255,13 @@ def render_crosssection_diagram(b, l, d, z):
             showlegend=False
         ))
 
-    fig.update_layout(
-        **LAYOUT_BASE,
-        title="Vertical Cross-Section",
-        xaxis=dict(showticklabels=False, showgrid=False,
-                   range=[-0.1, W + 0.5], zeroline=False),
-        yaxis=dict(title="Depth (m)", autorange="reversed",
-                   showgrid=False, tickfont=dict(size=11)),
-        height=350,
-        margin=dict(l=60, r=120, t=50, b=40),
-    )
+    layout = {**LAYOUT_BASE,
+              "title": "Vertical Cross-Section",
+              "xaxis": dict(showticklabels=False, showgrid=False,
+                            range=[-0.1, W + 0.5], zeroline=False),
+              "yaxis": dict(title="Depth (m)", autorange="reversed",
+                            showgrid=False, tickfont=dict(size=11)),
+              "height": 350,
+              "margin": dict(l=60, r=120, t=50, b=40)}
+    fig.update_layout(**layout)
     return fig
