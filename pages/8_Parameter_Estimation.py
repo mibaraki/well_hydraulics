@@ -9,7 +9,8 @@ import streamlit as st
 import plotly.graph_objects as go
 from scipy.optimize import curve_fit
 from utils.theis import calc_drawdown
-from utils.plotting import make_loglog_figure, add_theis_trace, add_data_trace, COLORS
+from utils.plotting import (make_loglog_figure, add_theis_trace, add_data_trace,
+                             plotly_chart_with_print, COLORS)
 
 st.set_page_config(page_title="Parameter Estimation", page_icon="📈", layout="wide")
 st.title("📈 Parameter Estimation — Curve Fitting")
@@ -107,7 +108,7 @@ fig.add_trace(go.Scatter(
     line=dict(color=COLORS["model"], width=2.5)
 ))
 add_data_trace(fig, df_data)
-st.plotly_chart(fig, use_container_width=True)
+plotly_chart_with_print(fig, filename='parameter-estimation', use_container_width=True)
 
 # ── Residual plot ─────────────────────────────────────────────────────────────
 if fit_ok:
@@ -128,7 +129,7 @@ if fit_ok:
                    showgrid=True, gridcolor="#e0e0e0"),
         margin=dict(l=60, r=30, t=50, b=60),
     )
-    st.plotly_chart(fig_res, use_container_width=True)
+    plotly_chart_with_print(fig_res, filename='residuals', use_container_width=True)
 
 # ── Data table ────────────────────────────────────────────────────────────────
 if fit_ok:

@@ -7,7 +7,8 @@ import numpy as np
 import streamlit as st
 from utils.theis import calc_drawdown
 from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
-                             make_loglog_figure, add_theis_trace, add_data_trace)
+                             make_loglog_figure, add_theis_trace, add_data_trace,
+                             plotly_chart_with_print)
 
 st.set_page_config(page_title="Single Well", page_icon="🔵", layout="wide")
 st.title("🔵 Single Well — Standard Theis")
@@ -30,7 +31,7 @@ drawdown = calc_drawdown(times, T, S, r, Q)
 fig = make_loglog_figure("Theis Drawdown — Single Well")
 add_theis_trace(fig, times, drawdown, name="Theis", dash="solid")
 add_data_trace(fig, df_data)
-st.plotly_chart(fig, use_container_width=True)
+plotly_chart_with_print(fig, filename="single-well", use_container_width=True)
 
 # ── Results table ─────────────────────────────────────────────────────────────
 st.subheader("Results at selected times")

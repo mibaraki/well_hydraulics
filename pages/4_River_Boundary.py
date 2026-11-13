@@ -9,7 +9,7 @@ from utils.theis import calc_drawdown, calc_drawdown_river
 from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              make_loglog_figure, add_theis_trace,
                              add_model_trace, add_data_trace,
-                             render_geometry_diagram)
+                             render_geometry_diagram, plotly_chart_with_print)
 
 st.set_page_config(page_title="River Boundary", page_icon="🔵", layout="wide")
 st.title("🔵 River Boundary — Constant-Head")
@@ -56,14 +56,14 @@ with col1:
                     dash="dot", color="#aaa")
     add_model_trace(fig, times, s_river, name="River boundary (−Q image)")
     add_data_trace(fig, df_data)
-    st.plotly_chart(fig, use_container_width=True)
+    plotly_chart_with_print(fig, filename='river-boundary', use_container_width=True)
 
 with col2:
     fig_geo = render_geometry_diagram(
         r, theta, a, x_obs, y_obs, r_image,
         boundary_label="River", image_label="Image (injection)"
     )
-    st.plotly_chart(fig_geo, use_container_width=True)
+    plotly_chart_with_print(fig_geo, filename='river-geometry', use_container_width=True)
 
 st.info(
     f"r = {r:.1f} m · θ = {theta:.0f}° · a = {a:.1f} m · "

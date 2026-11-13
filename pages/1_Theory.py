@@ -4,6 +4,7 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 from scipy.special import exp1
+from utils.plotting import plotly_chart_with_print
 
 st.set_page_config(page_title="Theory", page_icon="📚", layout="wide")
 st.title("📚 Theis Equation — Theory")
@@ -56,16 +57,16 @@ fig.add_trace(go.Scatter(
 ))
 fig.update_layout(
     paper_bgcolor="white", plot_bgcolor="white",
-    font=dict(family="Helvetica, Arial, sans-serif", size=14),
-    title="Theis Well Function W(u)",
+    font=dict(family="Helvetica, Arial, sans-serif", size=17),
+    title=dict(text="Theis Well Function W(u)", font=dict(size=22)),
     xaxis=dict(type="log", title="u", showgrid=True, gridcolor="#e0e0e0",
-               title_font=dict(size=15), tickfont=dict(size=12)),
+               title_font=dict(size=19), tickfont=dict(size=16)),
     yaxis=dict(type="log", title="W(u)", showgrid=True, gridcolor="#e0e0e0",
-               title_font=dict(size=15), tickfont=dict(size=12)),
+               title_font=dict(size=19), tickfont=dict(size=16)),
     legend=dict(x=0.02, y=0.05),
-    margin=dict(l=60, r=30, t=50, b=60),
+    margin=dict(l=85, r=35, t=75, b=85),
 )
-st.plotly_chart(fig, use_container_width=True)
+plotly_chart_with_print(fig, filename="well-function", use_container_width=True)
 
 # ── 4. Method of Images ──────────────────────────────────────────────────────
 st.header("4. Method of Images")

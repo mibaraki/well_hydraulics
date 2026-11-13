@@ -9,7 +9,7 @@ from utils.theis import calc_drawdown, calc_drawdown_barrier
 from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              make_loglog_figure, add_theis_trace,
                              add_model_trace, add_data_trace,
-                             render_geometry_diagram)
+                             render_geometry_diagram, plotly_chart_with_print)
 
 st.set_page_config(page_title="No-Flow Barrier", page_icon="🔵", layout="wide")
 st.title("🔵 No-Flow Barrier — Thinning Aquifer")
@@ -56,14 +56,14 @@ with col1:
     add_model_trace(fig, times, s_barrier, name="No-flow barrier (+Q image)",
                     color="#d62728")
     add_data_trace(fig, df_data)
-    st.plotly_chart(fig, use_container_width=True)
+    plotly_chart_with_print(fig, filename='barrier-drawdown', use_container_width=True)
 
 with col2:
     fig_geo = render_geometry_diagram(
         r, theta, a, x_obs, y_obs, r_image,
         boundary_label="Barrier", image_label="Image (pump)"
     )
-    st.plotly_chart(fig_geo, use_container_width=True)
+    plotly_chart_with_print(fig_geo, filename='barrier-geometry', use_container_width=True)
 
 st.info(
     f"r = {r:.1f} m · θ = {theta:.0f}° · a = {a:.1f} m · "

@@ -9,7 +9,8 @@ import streamlit as st
 import plotly.graph_objects as go
 from utils.theis import calc_drawdown
 from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
-                             make_loglog_figure, add_data_trace, COLORS, LAYOUT_BASE)
+                             make_loglog_figure, add_data_trace,
+                             plotly_chart_with_print, COLORS, LAYOUT_BASE)
 
 st.set_page_config(page_title="Multiple Wells", page_icon="🔵", layout="wide")
 st.title("🔵 Multiple Wells — Superposition")
@@ -66,7 +67,7 @@ fig.add_trace(go.Scatter(
 ))
 
 add_data_trace(fig, df_data)
-st.plotly_chart(fig, use_container_width=True)
+plotly_chart_with_print(fig, filename='multiple-wells', use_container_width=True)
 
 # ── Results table ─────────────────────────────────────────────────────────────
 st.subheader("Total drawdown at selected times")

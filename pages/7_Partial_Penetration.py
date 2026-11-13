@@ -10,7 +10,7 @@ from utils.theis import calc_drawdown, calc_drawdown_partial
 from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              make_loglog_figure, add_theis_trace,
                              add_model_trace, add_data_trace,
-                             render_crosssection_diagram)
+                             render_crosssection_diagram, plotly_chart_with_print)
 
 st.set_page_config(page_title="Partial Penetration", page_icon="🔵", layout="wide")
 st.title("🔵 Partial Penetration — Hantush (1961)")
@@ -71,11 +71,11 @@ with col1:
                     name="Hantush W(u, nπr/b) — partial penetration",
                     color="#9467bd")
     add_data_trace(fig, df_data)
-    st.plotly_chart(fig, use_container_width=True)
+    plotly_chart_with_print(fig, filename='partial-penetration', use_container_width=True)
 
 with col2:
     fig_xs = render_crosssection_diagram(b, l, d, z)
-    st.plotly_chart(fig_xs, use_container_width=True)
+    plotly_chart_with_print(fig_xs, filename='cross-section', use_container_width=True)
 
 # ── Results table ─────────────────────────────────────────────────────────────
 st.subheader("Results at selected times")
