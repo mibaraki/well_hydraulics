@@ -1,6 +1,8 @@
 # utils/plotting.py
 # Shared Streamlit UI components and Plotly chart builders
 
+import json
+
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -93,29 +95,33 @@ def render_print_button(fig, filename="chart"):
         config={"displayModeBar": False},
     )
 
-    # Escape characters that would break the JS template literal
-    fig_html_escaped = (
-        fig_html
-        .replace("\\", "\\\\")
-        .replace("`", "\\`")
-        .replace("${", "\\${")
-    )
-
-    # Auto-trigger print when the popup opens
+    # Auto-trigger print when the popup opens (runs only inside the popup)
     print_script = "<script>window.onload=function(){window.print();};</script>"
-    fig_html_final = fig_html_escaped.replace("</body>", print_script + "</body>")
+    fig_html_final = fig_html.replace("</body>", print_script + "</body>")
+
+    # Embed the page as a JSON string literal. "</" and "<!--" must be broken
+    # up, otherwise the browser would end THIS <script> block at the first
+    # "</script>" inside the figure HTML and leak the rest (including the
+    # auto-print line) into the iframe, which then prints on every rerun.
+    js_literal = (
+        json.dumps(fig_html_final)
+        .replace("</", "<\\/")
+        .replace("<!--", "<\\!--")
+    )
 
     html = f"""
     <script>
-    function doPrint_{filename.replace('-','_')}() {{
+    var __figHtml = {js_literal};
+    function doPrint() {{
         var w = window.open('', '_blank');
+        if (!w) {{ alert('Please allow pop-ups to print this figure.'); return; }}
         w.document.open();
-        w.document.write(`{fig_html_final}`);
+        w.document.write(__figHtml);
         w.document.close();
     }}
     </script>
     <button
-        onclick="doPrint_{filename.replace('-','_')}()"
+        onclick="doPrint()"
         title="Print {filename}"
         style="display:inline-flex;align-items:center;gap:6px;
                background:#f0f2f6;border:1px solid #ccc;border-radius:6px;
@@ -128,10 +134,10 @@ def render_print_button(fig, filename="chart"):
     components.html(html, height=52)
 
 
-def apply_drawdown_floor(fig, ymin=0.01):
+def apply_drawdown_floor(fig, ymin=0.001):
     """
-    For log-scale drawdown plots, fix the lower y limit at `ymin` (m) so the
-    axis never drops to micrometre values. The upper limit is still set
+    For log-scale drawdown plots, fix the lower y limit at `ymin` (m, default
+    0.001) so the axis never drops to micrometre values. The upper limit is still set
     automatically from the largest plotted value.
     Figures without a log "Drawdown (m)" y-axis are left untouched.
     """
@@ -162,7 +168,7 @@ def plotly_chart_with_print(fig, filename="chart", **kwargs):
     """
     Drop-in replacement for st.plotly_chart() that also shows a Print button.
     All extra kwargs are forwarded to st.plotly_chart().
-    Drawdown (log) axes are floored at 0.01 m.
+    Drawdown (log) axes are floored at 0.001 m.
     """
     apply_drawdown_floor(fig)
     st.plotly_chart(fig, **kwargs)
