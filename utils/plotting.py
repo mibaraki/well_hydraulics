@@ -88,15 +88,31 @@ def render_print_button(fig, filename="chart"):
     fig      : plotly.graph_objects.Figure
     filename : str   label used in the button tooltip
     """
+    # Fixed figure size that fits a landscape A4 / Letter page. Without it Plotly
+    # sizes the figure to the popup window, which is wider than the paper, and the
+    # right-hand side of the chart is cut off when printed.
+    print_w = 900
+    print_h = int(fig.layout.height) if fig.layout.height else 600
     fig_html = pio.to_html(
         fig,
         full_html=True,
         include_plotlyjs="cdn",
         config={"displayModeBar": False},
+        default_width=f"{print_w}px",
+        default_height=f"{print_h}px",
     )
 
-    # Auto-trigger print when the popup opens (runs only inside the popup)
-    print_script = "<script>window.onload=function(){window.print();};</script>"
+    print_css = (
+        "<style>@page{size:landscape;margin:12mm}"
+        "html,body{margin:0;padding:0;background:#fff}"
+        "body{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style>"
+    )
+    fig_html = fig_html.replace("</head>", print_css + "</head>")
+
+    # Auto-trigger print shortly after the popup has drawn the figure
+    # (runs only inside the popup)
+    print_script = ("<script>window.onload=function(){"
+                    "setTimeout(function(){window.print();},500);};</script>")
     fig_html_final = fig_html.replace("</body>", print_script + "</body>")
 
     # Embed the page as a JSON string literal. "</" and "<!--" must be broken

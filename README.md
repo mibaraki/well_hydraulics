@@ -59,6 +59,7 @@ theis_app/
 └── utils/
     ├── __init__.py
     ├── theis.py        ← core math (shared by all pages)
+    ├── fitting.py      ← T and S curve fitting (log or linear misfit, multi-start)
     └── plotting.py     ← shared Plotly chart builders and Streamlit widgets
 ```
 
