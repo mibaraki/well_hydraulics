@@ -65,6 +65,7 @@ fig.update_layout(
                title_font=dict(size=19), tickfont=dict(size=16)),
     legend=dict(x=0.02, y=0.05),
     margin=dict(l=85, r=35, t=75, b=85),
+    height=700,
 )
 plotly_chart_with_print(fig, filename="well-function", use_container_width=True)
 

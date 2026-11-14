@@ -20,6 +20,10 @@ _TITLE_FONT = 22
 _AXIS_TITLE = 19
 _TICK_FONT  = 16
 
+# Height (px) of the log-log charts on the page. Streamlit's default is 450, which
+# looks too wide on a wide screen; 700 gives a taller y-axis.
+LOGLOG_HEIGHT = 700
+
 
 # ── Sidebar widgets ──────────────────────────────────────────────────────────
 
@@ -92,7 +96,8 @@ def render_print_button(fig, filename="chart"):
     # sizes the figure to the popup window, which is wider than the paper, and the
     # right-hand side of the chart is cut off when printed.
     print_w = 900
-    print_h = int(fig.layout.height) if fig.layout.height else 600
+    # capped at 640 px so the chart plus margins stays on one landscape sheet
+    print_h = min(int(fig.layout.height), 640) if fig.layout.height else 600
     fig_html = pio.to_html(
         fig,
         full_html=True,
@@ -222,6 +227,7 @@ def make_loglog_figure(title="Theis Drawdown — Log-Log"):
     fig = go.Figure()
     fig.update_layout(
         **LAYOUT_BASE,
+        height=LOGLOG_HEIGHT,
         title=dict(text=title, font=dict(size=_TITLE_FONT)),
         xaxis=dict(
             type="log", title="Time (min)",
