@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
-from utils.theis import calc_drawdown
+from utils.theis import calc_drawdown, TIME_MAX_MIN
 from utils.fitting import theis_vec, fit_theis
 from utils.plotting import (make_loglog_figure, add_data_trace,
                              plotly_chart_with_print, COLORS)
@@ -84,13 +84,19 @@ t_lo = st.sidebar.number_input("Fit from t (min)", value=float(times_obs.min()),
                                min_value=0.0, step=10.0, key=f"t_lo_{key}")
 t_hi = st.sidebar.number_input("Fit to t (min)", value=float(times_obs.max()),
                                min_value=0.0, step=10.0, key=f"t_hi_{key}")
+s_min = st.sidebar.number_input(
+    "Ignore drawdown below (m)", value=0.01, min_value=0.0, step=0.001, format="%.3f",
+    help="Very small drawdowns are dominated by reading resolution (a 0.5 mm error "
+         "is 25% of a 2 mm reading), yet a log fit counts them as much as any other "
+         "point. Default 0.01 m, the same as the lower limit of the drawdown plots.")
 multi = st.sidebar.checkbox("Try several starting points", value=True,
                             help="Runs the fit from a grid of starting values and "
                                  "keeps the best result.")
 
-use = (times_obs >= t_lo) & (times_obs <= t_hi)
+use = (times_obs >= t_lo) & (times_obs <= t_hi) & (s_obs >= s_min)
 if use.sum() < 3:
-    st.error("Fewer than 3 data points lie inside the fit window. Widen it.")
+    st.error("Fewer than 3 data points pass the fit window and the minimum "
+             "drawdown. Widen the window or lower the minimum.")
     st.stop()
 
 # ── Fitting ───────────────────────────────────────────────────────────────────
@@ -104,7 +110,8 @@ T_fit, S_fit = fit["T"], fit["S"]
 
 st.info(f"Fitting with **r = {r:g} m** and **Q = {Q:g} m³/day** "
         f"({int(use.sum())} of {len(df_data)} points, "
-        f"{t_lo:g}–{t_hi:g} min). T and S scale with Q, so a wrong Q gives wrong T and S.")
+        f"{t_lo:g}–{t_hi:g} min, drawdown ≥ {s_min:g} m). "
+        f"T and S scale with Q, so a wrong Q gives wrong T and S.")
 
 # ── Results ───────────────────────────────────────────────────────────────────
 col1, col2, col3, col4 = st.columns(4)
@@ -125,7 +132,8 @@ if fit["at_bound"]:
                "(T: 0.01–10,000 m²/day, S: 1e-7–1). Check r, Q and the fit window.")
 
 # ── Chart ────────────────────────────────────────────────────────────────────
-times_plot = np.logspace(np.log10(times_obs.min()), np.log10(times_obs.max()), 300)
+times_plot = np.logspace(np.log10(times_obs.min()),
+                         np.log10(max(times_obs.max(), TIME_MAX_MIN)), 300)
 s_fit_plot = calc_drawdown(times_plot, T_fit, S_fit, r, Q)
 
 fig = make_loglog_figure("Parameter Estimation — Best-Fit Theis Curve")

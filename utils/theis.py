@@ -5,6 +5,9 @@ import numpy as np
 from scipy.special import exp1
 from scipy.integrate import quad
 
+# Longest time (minutes) computed and plotted on the calculator pages
+TIME_MAX_MIN = 3500
+
 
 def well_function(u):
     """Theis well function W(u) = E1(u)."""
@@ -66,7 +69,7 @@ def hantush_W(u, beta):
     return result
 
 
-def calc_drawdown_partial(times, T, S, r, Q, b, l, d, z, n_terms=20):
+def calc_drawdown_partial(times, T, S, r, Q, b, l, d, z, n_terms=100):
     """
     Hantush (1961) partial penetration — full transient solution using W(u, nπr/b).
 
@@ -81,7 +84,8 @@ def calc_drawdown_partial(times, T, S, r, Q, b, l, d, z, n_terms=20):
     l      : float       depth to top of well screen (m)
     d      : float       depth to bottom of well screen (m)
     z      : float       depth of observation point (m)
-    n_terms: int         number of Fourier series terms
+    n_terms: int         maximum number of Fourier series terms (the sum stops
+                         earlier once the remaining terms are negligible)
 
     Returns
     -------
@@ -97,7 +101,13 @@ def calc_drawdown_partial(times, T, S, r, Q, b, l, d, z, n_terms=20):
         # Standard Theis term
         s_theis = Q / (4.0 * np.pi * T) * exp1(u)
 
-        # Partial penetration correction — Fourier series
+        # Partial penetration correction — Fourier series.
+        # |sin - sin| <= 2 and |cos| <= 1, so term n is bounded by (2/n)·W(u, nπr/b),
+        # which only shrinks as n grows. Stop when that bound is negligible next to
+        # the Theis term. Do NOT stop on the size of the term itself: for symmetric
+        # screens many terms are exactly zero, which would end the sum too early.
+        pref = 2.0 * b / (np.pi * (d - l))      # prefactor relative to Q/(4πT)
+        w_theis = exp1(u)
         correction = 0.0
         for n in range(1, n_terms + 1):
             beta = n * np.pi * r / b
@@ -106,8 +116,7 @@ def calc_drawdown_partial(times, T, S, r, Q, b, l, d, z, n_terms=20):
             wu_beta = hantush_W(u, beta)
             term = (1.0 / n) * fn * gn * wu_beta
             correction += term
-            # Early termination if series converges
-            if abs(term) < 1e-8 * abs(correction + 1e-30):
+            if pref * (2.0 / n) * wu_beta < 1e-9 * max(w_theis, 1e-300):
                 break
 
         correction *= (Q / (2.0 * np.pi ** 2 * T)) * (b / (d - l))

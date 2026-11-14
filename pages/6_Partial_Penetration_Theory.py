@@ -159,7 +159,8 @@ for n in range(1, 21):
 
 df_conv = pd.DataFrame(rows)
 st.dataframe(df_conv, use_container_width=False, hide_index=True)
-st.caption(f"At r/b = {r_demo:.1f}, u = {u_demo}. Series typically converges in 5–20 terms.")
+st.caption(f"At r/b = {r_demo:.1f}, u = {u_demo}. The number of terms needed grows as r/b gets smaller: "
+           "a handful near r/b ≈ 1, several tens near r/b ≈ 0.1.")
 
 # ── 8. Validity and Limitations ───────────────────────────────────────────────
 st.header("8. Validity and Limitations")

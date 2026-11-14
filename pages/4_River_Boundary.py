@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import numpy as np
 import streamlit as st
-from utils.theis import calc_drawdown, calc_drawdown_river
+from utils.theis import calc_drawdown, calc_drawdown_river, TIME_MAX_MIN
 from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              make_loglog_figure, add_theis_trace,
                              add_model_trace, add_data_trace,
@@ -43,7 +43,7 @@ if x_obs >= a:
     st.stop()
 
 # ── Calculation ───────────────────────────────────────────────────────────────
-times = np.logspace(np.log10(1), np.log10(1440), 300)
+times = np.logspace(np.log10(1), np.log10(TIME_MAX_MIN), 300)
 s_river, r_image, x_obs, y_obs = calc_drawdown_river(times, T, S, r, theta, a, Q)
 s_theis = calc_drawdown(times, T, S, r, Q)
 

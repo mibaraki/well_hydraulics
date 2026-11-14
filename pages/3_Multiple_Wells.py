@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
-from utils.theis import calc_drawdown
+from utils.theis import calc_drawdown, TIME_MAX_MIN
 from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              make_loglog_figure, add_data_trace,
                              plotly_chart_with_print, COLORS, LAYOUT_BASE)
@@ -40,7 +40,7 @@ for i in range(n_wells):
 df_data = render_upload_sidebar()
 
 # ── Calculation ───────────────────────────────────────────────────────────────
-times = np.logspace(np.log10(1), np.log10(1440), 300)
+times = np.logspace(np.log10(1), np.log10(TIME_MAX_MIN), 300)
 
 individual = []
 total = np.zeros(len(times))
@@ -71,7 +71,7 @@ plotly_chart_with_print(fig, filename='multiple-wells', use_container_width=True
 
 # ── Results table ─────────────────────────────────────────────────────────────
 st.subheader("Total drawdown at selected times")
-t_show = [1, 10, 30, 60, 120, 240, 480, 1440]
+t_show = [1, 10, 30, 60, 120, 240, 480, 1440, 2880, 3500]
 total_show = np.zeros(len(t_show))
 for r_i, Q_i in well_params:
     total_show += np.array(calc_drawdown(t_show, T, S, r_i, Q_i))

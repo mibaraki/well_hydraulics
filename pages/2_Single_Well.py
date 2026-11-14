@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import numpy as np
 import streamlit as st
-from utils.theis import calc_drawdown
+from utils.theis import calc_drawdown, TIME_MAX_MIN
 from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              make_loglog_figure, add_theis_trace, add_data_trace,
                              plotly_chart_with_print)
@@ -24,7 +24,7 @@ r = st.sidebar.number_input("Distance r (m)", value=50.0, min_value=0.1)
 df_data = render_upload_sidebar()
 
 # ── Calculation ───────────────────────────────────────────────────────────────
-times = np.logspace(np.log10(1), np.log10(1440), 300)
+times = np.logspace(np.log10(1), np.log10(TIME_MAX_MIN), 300)
 drawdown = calc_drawdown(times, T, S, r, Q)
 
 # ── Chart ────────────────────────────────────────────────────────────────────
@@ -36,7 +36,7 @@ plotly_chart_with_print(fig, filename="single-well", use_container_width=True)
 # ── Results table ─────────────────────────────────────────────────────────────
 st.subheader("Results at selected times")
 import pandas as pd
-t_show = [1, 5, 10, 30, 60, 120, 240, 480, 720, 1440]
+t_show = [1, 5, 10, 30, 60, 120, 240, 480, 720, 1440, 2880, 3500]
 s_show = calc_drawdown(t_show, T, S, r, Q)
 df_res = pd.DataFrame({"Time (min)": t_show, "Drawdown (m)": [f"{s:.4f}" for s in s_show]})
 st.dataframe(df_res, use_container_width=False, hide_index=True)

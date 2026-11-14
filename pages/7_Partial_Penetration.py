@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import numpy as np
 import pandas as pd
 import streamlit as st
-from utils.theis import calc_drawdown, calc_drawdown_partial
+from utils.theis import calc_drawdown, calc_drawdown_partial, TIME_MAX_MIN
 from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              make_loglog_figure, add_theis_trace,
                              add_model_trace, add_data_trace,
@@ -30,7 +30,7 @@ d = st.sidebar.number_input("Depth to bottom of screen d (m)", value=15.0, min_v
 
 st.sidebar.header("Observation Point")
 r = st.sidebar.number_input("Distance r (m)", value=50.0, min_value=0.1)
-z = st.sidebar.number_input("Observation depth z (m)", value=15.0, min_value=0.0)
+z = st.sidebar.number_input("Observation depth z (m)", value=5.0, min_value=0.0)
 
 df_data = render_upload_sidebar()
 
@@ -54,7 +54,7 @@ if r > 1.5 * b:
     )
 
 # ── Calculation ───────────────────────────────────────────────────────────────
-times = np.logspace(np.log10(1), np.log10(1440), 150)  # fewer points — W(u,β) is slow
+times = np.logspace(np.log10(1), np.log10(TIME_MAX_MIN), 150)  # fewer points — W(u,β) is slow
 
 with st.spinner("Computing Hantush W(u, β) — this may take a few seconds..."):
     s_partial = calc_drawdown_partial(times, T, S, r, Q, b, l, d, z)
@@ -79,7 +79,7 @@ with col2:
 
 # ── Results table ─────────────────────────────────────────────────────────────
 st.subheader("Results at selected times")
-t_show = [1, 5, 10, 30, 60, 120, 240, 480, 1440]
+t_show = [1, 5, 10, 30, 60, 120, 240, 480, 1440, 2880, 3500]
 with st.spinner("Computing results table..."):
     s_part_show = calc_drawdown_partial(t_show, T, S, r, Q, b, l, d, z)
 s_theis_show = calc_drawdown(t_show, T, S, r, Q)
