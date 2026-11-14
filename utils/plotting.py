@@ -134,11 +134,11 @@ def render_print_button(fig, filename="chart"):
     components.html(html, height=52)
 
 
-def apply_drawdown_floor(fig, ymin=0.001):
+def apply_drawdown_floor(fig, ymin=0.01):
     """
     For log-scale drawdown plots, fix the lower y limit at `ymin` (m, default
-    0.001) so the axis never drops to micrometre values. The upper limit is still set
-    automatically from the largest plotted value.
+    0.01) so the axis never drops to micrometre values. The upper limit is still
+    set automatically from the largest plotted value.
     Figures without a log "Drawdown (m)" y-axis are left untouched.
     """
     yaxis = fig.layout.yaxis
@@ -168,7 +168,7 @@ def plotly_chart_with_print(fig, filename="chart", **kwargs):
     """
     Drop-in replacement for st.plotly_chart() that also shows a Print button.
     All extra kwargs are forwarded to st.plotly_chart().
-    Drawdown (log) axes are floored at 0.001 m.
+    Drawdown (log) axes are floored at 0.01 m.
     """
     apply_drawdown_floor(fig)
     st.plotly_chart(fig, **kwargs)
