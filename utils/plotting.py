@@ -10,6 +10,8 @@ import streamlit.components.v1 as components
 import plotly.graph_objects as go
 import plotly.io as pio
 
+from utils.i18n import tr
+
 
 # ── Font scale (×1.2 from original baseline) ─────────────────────────────────
 # Original:  base=14, title=18, axis_title=16, tick=13
@@ -29,17 +31,17 @@ LOGLOG_HEIGHT = 700
 
 def render_aquifer_sidebar():
     """Render T and S log-scale sliders. Returns (T, S)."""
-    st.sidebar.header("Aquifer Parameters")
+    st.sidebar.header(tr("Aquifer Parameters", "帯水層パラメータ"))
 
     log_T = st.sidebar.slider(
-        "Transmissivity T (m²/day)",
+        tr("Transmissivity T (m²/day)", "透水量係数 T (m²/日)"),
         min_value=-2.0, max_value=3.0, value=2.0, step=0.01
     )
     T = 10 ** log_T
-    st.sidebar.caption(f"T = {T:.3g} m²/day")
+    st.sidebar.caption(f"T = {T:.3g} " + tr("m²/day", "m²/日"))
 
     log_S = st.sidebar.slider(
-        "Storativity S",
+        tr("Storativity S", "貯留係数 S"),
         min_value=-6.0, max_value=-1.0, value=-4.0, step=0.01
     )
     S = 10 ** log_S
@@ -53,9 +55,10 @@ def render_upload_sidebar():
     Render CSV upload widget.
     Returns DataFrame with columns [time_min, drawdown_m] or None.
     """
-    st.sidebar.header("Measurement Data")
+    st.sidebar.header(tr("Measurement Data", "観測データ"))
     uploaded = st.sidebar.file_uploader(
-        "Upload CSV or TXT (time min, drawdown m)",
+        tr("Upload CSV or TXT (time min, drawdown m)",
+           "CSV または TXT をアップロード（時間 min、水位低下量 m）"),
         type=["csv", "txt"]
     )
     if uploaded is not None:
@@ -70,10 +73,10 @@ def render_upload_sidebar():
             df = df.astype(float)
             df = df[(df["time_min"] > 0) & (df["drawdown_m"] > 0)]
             df = df.reset_index(drop=True)
-            st.sidebar.success(f"{len(df)} data points loaded")
+            st.sidebar.success(tr(f"{len(df)} data points loaded", f"{len(df)} 点のデータを読み込みました"))
             return df
         except Exception as e:
-            st.sidebar.error(f"Could not read file: {e}")
+            st.sidebar.error(tr(f"Could not read file: {e}", f"ファイルを読み込めません: {e}"))
     return None
 
 
@@ -130,12 +133,15 @@ def render_print_button(fig, filename="chart"):
         .replace("<!--", "<\\!--")
     )
 
+    print_label = tr("Print", "印刷")
+    popup_msg = json.dumps(tr("Please allow pop-ups to print this figure.",
+                              "この図を印刷するには、ポップアップを許可してください。"))
     html = f"""
     <script>
     var __figHtml = {js_literal};
     function doPrint() {{
         var w = window.open('', '_blank');
-        if (!w) {{ alert('Please allow pop-ups to print this figure.'); return; }}
+        if (!w) {{ alert({popup_msg}); return; }}
         w.document.open();
         w.document.write(__figHtml);
         w.document.close();
@@ -143,13 +149,13 @@ def render_print_button(fig, filename="chart"):
     </script>
     <button
         onclick="doPrint()"
-        title="Print {filename}"
+        title="{print_label}: {filename}"
         style="display:inline-flex;align-items:center;gap:6px;
                background:#f0f2f6;border:1px solid #ccc;border-radius:6px;
                padding:6px 18px;font-size:14px;
                font-family:Helvetica,Arial,sans-serif;
                cursor:pointer;color:#333;margin-top:2px;">
-      🖨&nbsp;Print
+      🖨&nbsp;{print_label}
     </button>
     """
     components.html(html, height=52)
@@ -164,7 +170,7 @@ def apply_drawdown_floor(fig, ymin=0.01):
     """
     yaxis = fig.layout.yaxis
     ytitle = yaxis.title.text if yaxis.title is not None else None
-    if yaxis.type != "log" or ytitle != "Drawdown (m)":
+    if yaxis.type != "log" or ytitle not in ("Drawdown (m)", "水位低下量 (m)"):
         return fig
 
     ymax = 0.0
@@ -222,22 +228,23 @@ LAYOUT_BASE = dict(
 
 # ── Log-log chart builder ─────────────────────────────────────────────────────
 
-def make_loglog_figure(title="Theis Drawdown — Log-Log"):
+def make_loglog_figure(title=None):
     """Return a base Plotly figure with log-log axes and ×1.2 fonts."""
+    title = title or tr("Theis Drawdown — Log-Log", "テイス法による水位低下量（両対数）")
     fig = go.Figure()
     fig.update_layout(
         **LAYOUT_BASE,
         height=LOGLOG_HEIGHT,
         title=dict(text=title, font=dict(size=_TITLE_FONT)),
         xaxis=dict(
-            type="log", title="Time (min)",
+            type="log", title=tr("Time (min)", "時間 (min)"),
             showgrid=True, gridcolor=COLORS["grid"],
             minor=dict(showgrid=True, gridcolor="#f0f0f0"),
             title_font=dict(size=_AXIS_TITLE),
             tickfont=dict(size=_TICK_FONT),
         ),
         yaxis=dict(
-            type="log", title="Drawdown (m)",
+            type="log", title=tr("Drawdown (m)", "水位低下量 (m)"),
             showgrid=True, gridcolor=COLORS["grid"],
             minor=dict(showgrid=True, gridcolor="#f0f0f0"),
             title_font=dict(size=_AXIS_TITLE),
@@ -257,7 +264,8 @@ def add_theis_trace(fig, times, drawdown, name="Theis", dash="dot", color=None):
     ))
 
 
-def add_model_trace(fig, times, drawdown, name="Model", color=None):
+def add_model_trace(fig, times, drawdown, name=None, color=None):
+    name = name or tr("Model", "モデル")
     color = color or COLORS["model"]
     fig.add_trace(go.Scatter(
         x=times, y=drawdown, mode="lines", name=name,
@@ -265,7 +273,8 @@ def add_model_trace(fig, times, drawdown, name="Model", color=None):
     ))
 
 
-def add_data_trace(fig, df, name="Measured data"):
+def add_data_trace(fig, df, name=None):
+    name = name or tr("Measured data", "観測データ")
     if df is not None and len(df) > 0:
         fig.add_trace(go.Scatter(
             x=df["time_min"], y=df["drawdown_m"],
@@ -278,8 +287,10 @@ def add_data_trace(fig, df, name="Measured data"):
 # ── Geometry diagram (plan view) ──────────────────────────────────────────────
 
 def render_geometry_diagram(r, theta_deg, a, x_obs, y_obs, r_image,
-                             boundary_label="Boundary", image_label="Image well"):
+                             boundary_label=None, image_label=None):
     """Plan-view geometry diagram for river / barrier pages."""
+    boundary_label = boundary_label or tr("Boundary", "境界")
+    image_label = image_label or tr("Image well", "影像井戸")
     fig = go.Figure()
 
     # Boundary line
@@ -308,7 +319,7 @@ def render_geometry_diagram(r, theta_deg, a, x_obs, y_obs, r_image,
     fig.add_trace(go.Scatter(
         x=[0], y=[0], mode="markers+text",
         marker=dict(symbol="circle", size=14, color="#1f77b4"),
-        text=["Pump"], textposition="top center",
+        text=[tr("Pump", "揚水井")], textposition="top center",
         textfont=dict(size=_BASE_FONT - 3, color="#1f77b4"),
         showlegend=False
     ))
@@ -318,7 +329,7 @@ def render_geometry_diagram(r, theta_deg, a, x_obs, y_obs, r_image,
     fig.add_trace(go.Scatter(
         x=[x_obs], y=[y_obs], mode="markers+text",
         marker=dict(symbol="star", size=14, color=obs_color),
-        text=["Obs"], textposition="top center",
+        text=[tr("Obs", "観測点")], textposition="top center",
         textfont=dict(size=_BASE_FONT - 3, color=obs_color),
         showlegend=False
     ))
@@ -345,7 +356,7 @@ def render_geometry_diagram(r, theta_deg, a, x_obs, y_obs, r_image,
     span_x = max(2 * a, span_y)
     layout = {
         **LAYOUT_BASE,
-        "title": dict(text="Plan View — Well & Boundary Geometry",
+        "title": dict(text=tr("Plan View — Well & Boundary Geometry", "平面図 — 井戸と境界の配置"),
                       font=dict(size=_TITLE_FONT - 2)),
         "xaxis": dict(
             title="x (m)", range=[-span_x * 0.25, span_x * 1.1],
@@ -380,18 +391,18 @@ def render_crosssection_diagram(b, l, d, z):
     # Screen interval
     fig.add_shape(type="rect", x0=W * 0.3, x1=W * 0.7, y0=l, y1=d,
                   fillcolor="#1f77b4", line=dict(color="#1f77b4", width=0))
-    fig.add_annotation(x=W * 0.5, y=(l + d) / 2, text="Screen",
+    fig.add_annotation(x=W * 0.5, y=(l + d) / 2, text=tr("Screen", "ストレーナー"),
                        showarrow=False,
                        font=dict(color="white", size=_BASE_FONT - 3))
 
-    # Well casing (above screen)
-    fig.add_shape(type="rect", x0=W * 0.42, x1=W * 0.58, y0=d, y1=b,
+    # Well casing (above the screen: depth 0 to l)
+    fig.add_shape(type="rect", x0=W * 0.42, x1=W * 0.58, y0=0, y1=l,
                   fillcolor="#999", line=dict(color="#666", width=1))
 
     # Depth reference lines and labels
     for depth, label in [
-        (0, "b (base)"),
-        (b, "Water table"),
+        (0, tr("Water table", "地下水面")),
+        (b, tr("b (base)", "b（帯水層底面）")),
         (l, f"l = {l:.1f} m"),
         (d, f"d = {d:.1f} m"),
     ]:
@@ -406,19 +417,19 @@ def render_crosssection_diagram(b, l, d, z):
         fig.add_trace(go.Scatter(
             x=[W * 0.85], y=[z], mode="markers+text",
             marker=dict(symbol="star", size=14, color="#d62728"),
-            text=[f"Obs  z = {z:.1f} m"], textposition="middle right",
+            text=[tr(f"Obs  z = {z:.1f} m", f"観測点  z = {z:.1f} m")], textposition="middle right",
             textfont=dict(size=_BASE_FONT - 4, color="#d62728"),
             showlegend=False
         ))
 
     layout = {
         **LAYOUT_BASE,
-        "title": dict(text="Vertical Cross-Section",
+        "title": dict(text=tr("Vertical Cross-Section", "鉛直断面図"),
                       font=dict(size=_TITLE_FONT - 2)),
         "xaxis": dict(showticklabels=False, showgrid=False,
                       range=[-0.1, W + 0.6], zeroline=False),
         "yaxis": dict(
-            title="Depth (m)", autorange="reversed",
+            title=tr("Depth (m)", "深さ (m)"), autorange="reversed",
             showgrid=False,
             title_font=dict(size=_AXIS_TITLE - 2),
             tickfont=dict(size=_TICK_FONT - 2),

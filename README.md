@@ -21,6 +21,10 @@ A multi-page Streamlit app for confined aquifer drawdown analysis based on the
 
 See [LICENSING.md](LICENSING.md). `EDITION=free` (default) hides the pro pages; `EDITION=pro` unlocks them with a signed one-year license key.
 
+## Language
+
+A **Language / 言語** switch (English / 日本語) at the top of the left sidebar translates the whole app. All texts go through `tr(english, japanese)` in `utils/i18n.py`.
+
 ## Installation
 
 ```bash
@@ -66,6 +70,7 @@ theis_app/
 └── utils/
     ├── __init__.py
     ├── theis.py        ← core math (shared by all pages)
+    ├── i18n.py         ← English / Japanese switch, tr(en, ja)
     ├── license.py      ← edition switch, key verification, require_license()
     ├── fitting.py      ← T and S curve fitting (log or linear misfit, multi-start)
     └── plotting.py     ← shared Plotly chart builders and Streamlit widgets

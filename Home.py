@@ -11,29 +11,37 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import streamlit as st
+from utils.i18n import tr, language_switch
 from utils.license import is_pro_edition, is_pro_page
 
-st.set_page_config(page_title="Theis Groundwater Calculator", page_icon="💧", layout="wide")
+st.set_page_config(page_title=tr("Theis Groundwater Calculator", "テイス式 地下水計算ツール"),
+                   page_icon="💧", layout="wide")
 
-# (file, title, icon)
+# (file, English title, Japanese title, icon, url slug)
 ALL_PAGES = [
-    ("home_page.py",                       "Home",                       "💧"),
-    ("pages/1_Theory.py",                  "Theory",                     "📚"),
-    ("pages/2_Single_Well.py",             "Single Well",                "🔵"),
-    ("pages/3_Multiple_Wells.py",          "Multiple Wells",             "🔵"),
-    ("pages/4_River_Boundary.py",          "River Boundary",             "🌊"),
-    ("pages/5_NoFlow_Barrier.py",          "No-Flow Barrier",            "🧱"),
-    ("pages/6_Partial_Penetration_Theory.py", "Partial Penetration Theory", "📚"),
-    ("pages/7_Partial_Penetration.py",     "Partial Penetration",        "🔵"),
-    ("pages/8_Parameter_Estimation.py",    "Parameter Estimation",       "📈"),
+    ("home_page.py",                          "Home",                      "ホーム",             "💧", ""),
+    ("pages/1_Theory.py",                     "Theory",                    "理論",               "📚", "theory"),
+    ("pages/2_Single_Well.py",                "Single Well",               "単一井戸",           "🔵", "single-well"),
+    ("pages/3_Multiple_Wells.py",             "Multiple Wells",            "複数井戸",           "🔵", "multiple-wells"),
+    ("pages/4_River_Boundary.py",             "River Boundary",            "河川境界",           "🌊", "river-boundary"),
+    ("pages/5_NoFlow_Barrier.py",             "No-Flow Barrier",           "不透水境界",         "🧱", "no-flow-barrier"),
+    ("pages/6_Partial_Penetration_Theory.py", "Partial Penetration Theory", "部分貫入井の理論",   "📚", "partial-penetration-theory"),
+    ("pages/7_Partial_Penetration.py",        "Partial Penetration",       "部分貫入井",         "🔵", "partial-penetration"),
+    ("pages/8_Parameter_Estimation.py",       "Parameter Estimation",      "パラメータ推定",     "📈", "parameter-estimation"),
 ]
 
 pro = is_pro_edition()
 pages = []
-for path, title, icon in ALL_PAGES:
+for path, en, ja, icon, slug in ALL_PAGES:
     if is_pro_page(path) and not pro:
         continue                       # free edition: page does not exist
-    pages.append(st.Page(path, title=title, icon=icon,
-                         default=(path == "home_page.py")))
+    kwargs = dict(title=tr(en, ja), icon=icon)
+    if slug:
+        kwargs["url_path"] = slug
+    else:
+        kwargs["default"] = True
+    pages.append(st.Page(path, **kwargs))
 
-st.navigation(pages).run()
+nav = st.navigation(pages)
+language_switch()                      # English / 日本語 switch, left sidebar
+nav.run()

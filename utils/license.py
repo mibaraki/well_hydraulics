@@ -19,6 +19,8 @@ from datetime import date, datetime
 
 import streamlit as st
 
+from utils.i18n import tr
+
 PREFIX = "THEIS"
 
 # Pages that need a license. Everything else is free.
@@ -29,6 +31,7 @@ PRO_PAGES = {
     "5_NoFlow_Barrier.py",
     "6_Partial_Penetration_Theory.py",
     "7_Partial_Penetration.py",
+    "8_Parameter_Estimation.py",
 }
 
 _SESSION_KEY = "license_key_text"
@@ -79,7 +82,7 @@ def verify_key(key_text, public_key_b64=None, today=None, revoked=None):
     today = today or date.today()
     pub = public_key_b64 if public_key_b64 is not None else _setting("LICENSE_PUBLIC_KEY")
     if not pub:
-        return False, {}, "This server has no license public key configured."
+        return False, {}, tr("This server has no license public key configured.", "このサーバーにはライセンス公開鍵が設定されていません。")
     if revoked is None:
         revoked = {x.strip() for x in _setting("REVOKED_IDS").split(",") if x.strip()}
 
@@ -92,13 +95,13 @@ def verify_key(key_text, public_key_b64=None, today=None, revoked=None):
         info = json.loads(payload_bytes)
         expiry = datetime.strptime(info["e"], "%Y-%m-%d").date()
     except (ValueError, KeyError, InvalidSignature, TypeError):
-        return False, {}, "This license key is not valid. Check that it was copied completely."
+        return False, {}, tr("This license key is not valid. Check that it was copied completely.", "このライセンスキーは無効です。キー全体が正しくコピーされているか確認してください。")
 
     if info.get("id") in revoked:
-        return False, info, "This license key has been revoked. Please contact the seller."
+        return False, info, tr("This license key has been revoked. Please contact the seller.", "このライセンスキーは失効しています。販売元にお問い合わせください。")
     if today > expiry:
-        return False, info, f"This license key expired on {expiry:%Y-%m-%d}. Please renew it."
-    return True, info, f"Licensed to {info.get('c', '?')} · valid through {expiry:%Y-%m-%d}"
+        return False, info, tr(f"This license key expired on {expiry:%Y-%m-%d}. Please renew it.", f"このライセンスキーは {expiry:%Y-%m-%d} に有効期限が切れました。更新してください。")
+    return True, info, tr(f"Licensed to {info.get('c', '?')} · valid through {expiry:%Y-%m-%d}", f"ライセンス名義: {info.get('c', '?')} · {expiry:%Y-%m-%d} まで有効")
 
 
 # ── Streamlit UI ──────────────────────────────────────────────────────────────
@@ -106,7 +109,7 @@ def _license_box(label_visible=True):
     """Key entry box. Returns (ok, info, message) for the stored key."""
     stored = st.session_state.get(_SESSION_KEY, "")
     entered = st.text_input(
-        "License key", value=stored, type="password", key="license_key_input",
+        tr("License key", "ライセンスキー"), value=stored, type="password", key="license_key_input",
         placeholder="THEIS.…", label_visibility="visible" if label_visible else "collapsed")
     entered = entered.strip()
     st.session_state[_SESSION_KEY] = entered
@@ -120,14 +123,14 @@ def license_status_sidebar():
     if not is_pro_edition():
         return
     with st.sidebar:
-        st.markdown("### 🔑 License")
+        st.markdown(tr("### 🔑 License", "### 🔑 ライセンス"))
         ok, _, msg = _license_box()
         if ok:
             st.success(msg)
         elif msg:
             st.error(msg)
         else:
-            st.info("Enter your license key to unlock all pages.")
+            st.info(tr("Enter your license key to unlock all pages.", "ライセンスキーを入力すると、すべてのページが使えます。"))
 
 
 def require_license():
@@ -136,9 +139,9 @@ def require_license():
     Stops the page unless this is the pro edition AND a valid key is entered.
     """
     if not is_pro_edition():
-        st.title("🔒 Pro feature")
-        st.info("This page is part of the Pro edition and is not available in the "
-                "free version.")
+        st.title(tr("🔒 Pro feature", "🔒 Pro 版の機能"))
+        st.info(tr("This page is part of the Pro edition and is not available in the "
+                   "free version.", "このページは Pro 版の機能で、無料版では利用できません。"))
         st.stop()
 
     ok, _, msg = verify_key(st.session_state.get(_SESSION_KEY, "")) \
@@ -148,9 +151,10 @@ def require_license():
             st.caption(f"🔑 {msg}")
         return
 
-    st.title("🔑 License required")
-    st.write("Enter your license key to use this page. The key is kept only for "
-             "this browser session.")
+    st.title(tr("🔑 License required", "🔑 ライセンスが必要です"))
+    st.write(tr("Enter your license key to use this page. The key is kept only for "
+                "this browser session.",
+                "このページを使うにはライセンスキーを入力してください。キーはこのブラウザのセッション中だけ保持されます。"))
     ok, _, msg = _license_box()
     if ok:
         st.rerun()

@@ -4,8 +4,8 @@ One repository, two deployments. `EDITION` decides which pages exist.
 
 | Edition | Pages | License key |
 |---|---|---|
-| `free` (default) | Home, Theory, Single Well, Parameter Estimation | not needed |
-| `pro` | all pages | required for pages marked pro |
+| `free` (default) | Home, Theory, Single Well | not needed |
+| `pro` | all pages (incl. Parameter Estimation) | required for pages marked pro |
 
 Which pages are pro is set in `utils/license.py` (`PRO_PAGES`).
 In the free edition the pro pages are not registered in `Home.py`, so they cannot be opened even by typing the URL.
