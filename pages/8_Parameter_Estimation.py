@@ -24,9 +24,9 @@ standard Theis equation. By default the misfit is measured on **log₁₀(drawdo
 every point counts equally on a log-log plot. You can also restrict the fit to a
 time window, for example to leave out late-time data that no longer follows Theis.
 """, """
-標準のテイス式を観測された水位低下量にあてはめて、**T**（透水量係数）と **S**（貯留係数）を求めます。
+標準のタイス式を観測された水位低下量にあてはめて、**T**（透水量係数）と **S**（貯留係数）を求めます。
 既定では **log₁₀(水位低下量)** で残差を測るため、両対数グラフ上ですべての点が同じ重みになります。
-時間範囲を限定することもできます。たとえば、テイス式に従わなくなった後期のデータを除外できます。
+時間範囲を限定することもできます。たとえば、タイス式に従わなくなった後期のデータを除外できます。
 """))
 
 # ── Upload data ───────────────────────────────────────────────────────────────
@@ -161,7 +161,7 @@ times_plot = np.logspace(np.log10(times_obs.min()),
                          np.log10(max(times_obs.max(), TIME_MAX_MIN)), 300)
 s_fit_plot = calc_drawdown(times_plot, T_fit, S_fit, r, Q)
 
-fig = make_loglog_figure(tr("Parameter Estimation — Best-Fit Theis Curve", "パラメータ推定 — 最適なテイス曲線"))
+fig = make_loglog_figure(tr("Parameter Estimation — Best-Fit Theis Curve", "パラメータ推定 — 最適なタイス曲線"))
 fig.add_trace(go.Scatter(
     x=times_plot, y=s_fit_plot, mode="lines",
     name=tr(f"Best fit (T={T_fit:.3g}, S={S_fit:.2e})", f"最適あてはめ (T={T_fit:.3g}, S={S_fit:.2e})"),

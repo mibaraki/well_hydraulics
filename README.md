@@ -8,7 +8,7 @@ A multi-page Streamlit app for confined aquifer drawdown analysis based on the
 | Page | Type | Description |
 |---|---|---|
 | Home | Landing | App overview and assumptions |
-| 1 Theory | Theory | Theis equation, W(u), method of images |
+| 1 Theory | Theory | Theis equation, W(u), method of superposition |
 | 2 Single Well | Calculator | Standard Theis drawdown |
 | 3 Multiple Wells | Calculator | Superposition of multiple wells |
 | 4 River Boundary | Calculator | Constant-head boundary (injection image well) |

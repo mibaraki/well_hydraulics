@@ -34,10 +34,10 @@ fully penetrating case. The effect becomes negligible at large distances:
 where b is the aquifer thickness and Kₕ/Kᵥ is the anisotropy ratio.
 
 **Screen position parameters:**
-- **b** — total aquifer thickness (m)
-- **l** — depth to top of screen (m)
-- **d** — depth to bottom of screen (m)
-- **z** — depth of observation point (m)
+- **b** — total aquifer thickness [L]
+- **l** — depth to top of screen [L]
+- **d** — depth to bottom of screen [L]
+- **z** — depth of observation point [L]
 """, """
 **完全貫入井**は帯水層の全層厚にストレーナーがあり、井戸へ向かう流れは水平方向（放射状）だけです。
 **部分貫入井**は帯水層の一部にしかストレーナーがないため、井戸の近くに**鉛直方向の流れ成分**が生じます。
@@ -50,10 +50,10 @@ where b is the aquifer thickness and Kₕ/Kᵥ is the anisotropy ratio.
 ここで b は帯水層の厚さ、Kₕ/Kᵥ は異方性比です。
 
 **ストレーナー位置のパラメータ:**
-- **b** — 帯水層の全層厚 (m)
-- **l** — ストレーナー上端の深さ (m)
-- **d** — ストレーナー下端の深さ (m)
-- **z** — 観測点の深さ (m)
+- **b** — 帯水層の全層厚 [L]
+- **l** — ストレーナー上端の深さ [L]
+- **d** — ストレーナー下端の深さ [L]
+- **z** — 観測点の深さ [L]
 """))
 
 col1, col2 = st.columns(2)
@@ -112,16 +112,16 @@ Compared to the standard Theis equation (2D, radial flow only), the extra term
 **Kᵥ/Kₕ · ∂²s/∂z²** captures the vertical flow component introduced by partial
 penetration.
 """, """
-標準のテイスの式（2 次元、放射状の流れのみ）と比べて、追加の項
+標準のタイスの式（2 次元、放射状の流れのみ）と比べて、追加の項
 **Kᵥ/Kₕ · ∂²s/∂z²** が、部分貫入によって生じる鉛直方向の流れ成分を表します。
 """))
 
 # ── 3. Hantush (1961) Solution ───────────────────────────────────────────────
 st.header(tr("3. Hantush (1961) Solution", "3. Hantush (1961) の解"))
-st.markdown(tr("The solution splits into a Theis part and a correction term:", "解は、テイス項と補正項に分けられます。"))
+st.markdown(tr("The solution splits into a Theis part and a correction term:", "解は、タイス項と補正項に分けられます。"))
 st.latex(r"s(r, z, t) = s_{Theis}(r,t) + s_{correction}(r, z, t)")
 
-st.markdown(tr("The Theis part:", "テイス項:"))
+st.markdown(tr("The Theis part:", "タイス項:"))
 st.latex(r"s_{Theis} = \frac{Q}{4\pi T}\, W(u), \qquad u = \frac{r^2 S}{4Tt}")
 
 st.markdown(tr("The partial penetration correction:", "部分貫入の補正項:"))
@@ -144,7 +144,7 @@ where β = nπr/b. Key properties:
 - The extra factor exp(−β²/4t) damps early-time and large-r contributions
 """, """
 ここで β = nπr/b です。主な性質:
-- **β → 0** のとき、テイスの W(u) = E₁(u) に一致する
+- **β → 0** のとき、タイスの W(u) = E₁(u) に一致する
 - **u → 0**（定常状態）のとき、2K₀(β) に一致する
 - 追加の因子 exp(−β²/4t) が、初期の寄与と r が大きい場合の寄与を減衰させる
 """))
@@ -231,10 +231,10 @@ st.markdown(tr("""
 - The isotropic form shown here assumes Kₕ = Kᵥ; anisotropy can be incorporated
   by rescaling the vertical coordinate
 """, """
-- r > 1.5 b √(Kₕ/Kᵥ) のとき補正は**無視できる**ため、その範囲では標準のテイス式で十分です
+- r > 1.5 b √(Kₕ/Kᵥ) のとき補正は**無視できる**ため、その範囲では標準のタイス式で十分です
 - **被圧**・均質・等方の帯水層を仮定します
 - ストレーナーは帯水層内に完全に収まる必要があります: l ≥ 0、d ≤ b
-- テイスの標準的な前提条件（一定の Q、無限に広い帯水層など）はそのまま適用されます
+- タイスの標準的な前提条件（一定の Q、無限に広い帯水層など）はそのまま適用されます
 - ここに示した等方の形式は Kₕ = Kᵥ を仮定しています。異方性は鉛直座標のスケール変換で取り込めます
 """))
 

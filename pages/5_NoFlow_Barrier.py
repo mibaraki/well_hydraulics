@@ -1,4 +1,4 @@
-"""5_NoFlow_Barrier.py — No-flow barrier (thinning aquifer) using method of images"""
+"""5_NoFlow_Barrier.py — No-flow barrier (thinning aquifer) using method of superposition"""
 
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -19,12 +19,12 @@ require_license()   # Pro page: needs a valid license key
 st.title(tr("🔵 No-Flow Barrier — Thinning Aquifer", "🔵 不透水境界 — 薄くなる帯水層"))
 st.markdown(tr("""
 An impermeable fault, aquifer pinchout, or valley wall acts as a **no-flow boundary**.
-The method of images places a **pumping well** (+Q) mirrored across the barrier.
+The method of superposition places a **pumping well** (+Q) mirrored across the barrier.
 Drawdown is **greater** than standard Theis at late time — no recharge from the barrier side.
 """, """
 不透水性の断層、帯水層のくさび状の消滅部、谷壁などは**不透水境界**として働きます。
-影像法では、境界を挟んで鏡像の位置に**揚水の影像井戸**（+Q）を置きます。
-境界側からの供給がないため、後期の水位低下量は標準テイス式より**大きく**なります。
+重ね合わせ法では、境界を挟んで鏡像の位置に**揚水の鏡像井戸（イメージ・ウェル）**（+Q）を置きます。
+境界側からの供給がないため、後期の水位低下量は標準タイス式より**大きく**なります。
 """))
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
@@ -45,9 +45,9 @@ s_test, r_image, x_obs, y_obs = calc_drawdown_barrier([60], T, S, r, theta, a, Q
 if x_obs >= a:
     st.error(tr(
         f"⚠️ Observation point (x = {x_obs:.1f} m) is beyond or on the barrier "
-        f"(x = {a:.1f} m). Method of images is not valid here.",
+        f"(x = {a:.1f} m). Method of superposition is not valid here.",
         f"⚠️ 観測点 (x = {x_obs:.1f} m) が境界 (x = {a:.1f} m) の向こう側、または境界上にあります。"
-        "この条件では影像法は適用できません。"
+        "この条件では重ね合わせ法は適用できません。"
     ))
     st.stop()
 
@@ -60,10 +60,10 @@ s_theis = calc_drawdown(times, T, S, r, Q)
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    fig = make_loglog_figure(tr("No-Flow Barrier — Method of Images", "不透水境界 — 影像法"))
-    add_theis_trace(fig, times, s_theis, name=tr("Standard Theis (no boundary)", "標準テイス式（境界なし）"),
+    fig = make_loglog_figure(tr("No-Flow Barrier — Method of Superposition", "不透水境界 — 重ね合わせ法"))
+    add_theis_trace(fig, times, s_theis, name=tr("Standard Theis (no boundary)", "標準タイス式（境界なし）"),
                     dash="dot", color="#aaa")
-    add_model_trace(fig, times, s_barrier, name=tr("No-flow barrier (+Q image)", "不透水境界（+Q の影像井戸）"),
+    add_model_trace(fig, times, s_barrier, name=tr("No-flow barrier (+Q image)", "不透水境界（+Q の鏡像井戸）"),
                     color="#d62728")
     add_data_trace(fig, df_data)
     plotly_chart_with_print(fig, filename='barrier-drawdown', use_container_width=True)
@@ -71,7 +71,7 @@ with col1:
 with col2:
     fig_geo = render_geometry_diagram(
         r, theta, a, x_obs, y_obs, r_image,
-        boundary_label=tr("Barrier", "境界"), image_label=tr("Image (pump)", "影像井戸（揚水）")
+        boundary_label=tr("Barrier", "境界"), image_label=tr("Image (pump)", "鏡像井戸（揚水）")
     )
     plotly_chart_with_print(fig_geo, filename='barrier-geometry', use_container_width=True)
 

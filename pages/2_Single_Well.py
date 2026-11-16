@@ -12,7 +12,7 @@ from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              plotly_chart_with_print)
 
 st.set_page_config(page_title=tr("Single Well", "単一井戸"), page_icon="🔵", layout="wide")
-st.title(tr("🔵 Single Well — Standard Theis", "🔵 単一井戸 — 標準テイス式"))
+st.title(tr("🔵 Single Well — Standard Theis", "🔵 単一井戸 — 標準タイス式"))
 st.markdown(tr("Calculates drawdown at a single observation point in a confined aquifer.", "被圧帯水層内の 1 つの観測点における水位低下量を計算します。"))
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
@@ -29,8 +29,8 @@ times = np.logspace(np.log10(1), np.log10(TIME_MAX_MIN), 300)
 drawdown = calc_drawdown(times, T, S, r, Q)
 
 # ── Chart ────────────────────────────────────────────────────────────────────
-fig = make_loglog_figure(tr("Theis Drawdown — Single Well", "テイス式による水位低下量 — 単一井戸"))
-add_theis_trace(fig, times, drawdown, name=tr("Theis", "テイス式"), dash="solid")
+fig = make_loglog_figure(tr("Theis Drawdown — Single Well", "タイス式による水位低下量 — 単一井戸"))
+add_theis_trace(fig, times, drawdown, name=tr("Theis", "タイス式"), dash="solid")
 add_data_trace(fig, df_data)
 plotly_chart_with_print(fig, filename="single-well", use_container_width=True)
 

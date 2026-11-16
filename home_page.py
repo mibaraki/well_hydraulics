@@ -8,18 +8,18 @@ from utils.i18n import tr
 from utils.license import is_pro_edition, license_status_sidebar
 
 st.set_page_config(
-    page_title=tr("Theis Groundwater Calculator", "テイス式 地下水計算ツール"),
+    page_title=tr("Theis Groundwater Calculator", "タイス式 地下水計算ツール"),
     page_icon="💧",
     layout="wide",
 )
 
 license_status_sidebar()
 
-st.title(tr("💧 Theis Groundwater Calculator", "💧 テイス式 地下水計算ツール"))
+st.title(tr("💧 Theis Groundwater Calculator", "💧 タイス式 地下水計算ツール"))
 st.markdown(tr(
     "An interactive multi-page app for confined aquifer drawdown analysis "
     "based on the **Theis (1935)** equation and its extensions.",
-    "**テイス (1935)** の式とその拡張にもとづく、被圧帯水層の水位低下量を解析する"
+    "**タイス (1935)** の式とその拡張にもとづく、被圧帯水層の水位低下量を解析する"
     "対話型のマルチページアプリです。"))
 
 if not is_pro_edition():
@@ -41,7 +41,7 @@ with col1:
 """, """
 | ページ | 内容 |
 |---|---|
-| **1 — 理論** | テイスの式、W(u)、前提条件 |
+| **1 — 理論** | タイスの式、W(u)、前提条件 |
 | **6 — 部分貫入井の理論** ⭐ | Hantush (1961)、W(u,β)、K₀ |
 """))
 
@@ -51,17 +51,17 @@ with col1:
 |---|---|
 | **2 — Single Well** | Standard Theis |
 | **3 — Multiple Wells** ⭐ | Superposition |
-| **4 — River Boundary** ⭐ | Method of images — injection well |
-| **5 — No-Flow Barrier** ⭐ | Method of images — pumping well |
+| **4 — River Boundary** ⭐ | Method of superposition — injection well |
+| **5 — No-Flow Barrier** ⭐ | Method of superposition — pumping well |
 | **7 — Partial Penetration** ⭐ | Hantush (1961) W(u,β) |
 | **8 — Parameter Estimation** ⭐ | Least-squares curve fitting |
 """, """
 | ページ | 手法 |
 |---|---|
-| **2 — 単一井戸** | 標準テイス式 |
+| **2 — 単一井戸** | 標準タイス式 |
 | **3 — 複数井戸** ⭐ | 重ね合わせ |
-| **4 — 河川境界** ⭐ | 影像法 — 注水の影像井戸 |
-| **5 — 不透水境界** ⭐ | 影像法 — 揚水の影像井戸 |
+| **4 — 河川境界** ⭐ | 重ね合わせ法 — 注水の鏡像井戸 |
+| **5 — 不透水境界** ⭐ | 重ね合わせ法 — 揚水の鏡像井戸 |
 | **7 — 部分貫入井** ⭐ | Hantush (1961) W(u,β) |
 | **8 — パラメータ推定** ⭐ | 最小二乗法による曲線あてはめ |
 """))
@@ -88,7 +88,7 @@ any additional assumptions specific to that method.
 - **一定の揚水量** Q で揚水する
 - 揚水井の**直径は無限小**とする
 
-これらは**テイス (1935)** の古典的な前提条件です。各ページには、その手法に固有の追加の前提条件も記載しています。
+これらは**タイス (1935)** の古典的な前提条件です。各ページには、その手法に固有の追加の前提条件も記載しています。
 """))
 
     st.subheader(tr("📁 Data Upload Format", "📁 データのアップロード形式"))

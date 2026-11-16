@@ -230,7 +230,7 @@ LAYOUT_BASE = dict(
 
 def make_loglog_figure(title=None):
     """Return a base Plotly figure with log-log axes and ×1.2 fonts."""
-    title = title or tr("Theis Drawdown — Log-Log", "テイス法による水位低下量（両対数）")
+    title = title or tr("Theis Drawdown — Log-Log", "タイス法による水位低下量（両対数）")
     fig = go.Figure()
     fig.update_layout(
         **LAYOUT_BASE,
@@ -290,7 +290,7 @@ def render_geometry_diagram(r, theta_deg, a, x_obs, y_obs, r_image,
                              boundary_label=None, image_label=None):
     """Plan-view geometry diagram for river / barrier pages."""
     boundary_label = boundary_label or tr("Boundary", "境界")
-    image_label = image_label or tr("Image well", "影像井戸")
+    image_label = image_label or tr("Image well", "鏡像井戸")
     fig = go.Figure()
 
     # Boundary line

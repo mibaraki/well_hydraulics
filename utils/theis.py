@@ -158,7 +158,7 @@ def compute_image_distance(r, theta_deg, a):
 
 def calc_drawdown_river(times, T, S, r, theta_deg, a, Q):
     """
-    Theis with constant-head river boundary (method of images).
+    Theis with constant-head river boundary (method of superposition).
     Image well is an injection well (-Q).
 
     Drawdown is less than standard Theis at late time.
@@ -171,7 +171,7 @@ def calc_drawdown_river(times, T, S, r, theta_deg, a, Q):
 
 def calc_drawdown_barrier(times, T, S, r, theta_deg, a, Q):
     """
-    Theis with no-flow barrier (method of images).
+    Theis with no-flow barrier (method of superposition).
     Image well is a pumping well (+Q).
 
     Drawdown is greater than standard Theis at late time.

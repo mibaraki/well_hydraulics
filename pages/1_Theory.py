@@ -8,7 +8,7 @@ from utils.i18n import tr
 from utils.plotting import plotly_chart_with_print
 
 st.set_page_config(page_title=tr("Theory", "理論"), page_icon="📚", layout="wide")
-st.title(tr("📚 Theis Equation — Theory", "📚 テイスの式 — 理論"))
+st.title(tr("📚 Theis Equation — Theory", "📚 タイスの式 — 理論"))
 
 # ── 1. Governing equation ────────────────────────────────────────────────────
 st.header(tr("1. Governing Equation", "1. 支配方程式"))
@@ -16,7 +16,7 @@ st.markdown(tr("""
 The Theis (1935) equation describes transient drawdown in a confined aquifer
 due to a pumping well. It is derived from the radial groundwater flow equation:
 """, """
-テイス (1935) の式は、揚水井による被圧帯水層の非定常な水位低下量を表します。
+タイス (1935) の式は、揚水井による被圧帯水層の非定常な水位低下量を表します。
 放射状の地下水流動方程式から導かれます。
 """))
 st.latex(
@@ -25,25 +25,27 @@ st.latex(
     r"\frac{S}{T}\frac{\partial s}{\partial t}"
 )
 st.markdown(tr("""
-where **s** (m) is drawdown, **r** (m) is radial distance, **t** (day) is time,
-**T** (m²/day) is transmissivity, and **S** (–) is storativity.
+where **s** [L] is drawdown, **r** [L] is radial distance, **t** [T] is time,
+**T** [L²/T] is transmissivity, and **S** [–] is storativity (dimensionless).
+Dimensions are given in brackets: L = length, T = time.
 """, """
-ここで **s** (m) は水位低下量、**r** (m) は半径方向の距離、**t** (日) は時間、
-**T** (m²/日) は透水量係数、**S** (–) は貯留係数です。
+ここで **s** [L] は水位低下量、**r** [L] は半径方向の距離、**t** [T] は時間、
+**T** [L²/T] は透水量係数、**S** [–] は貯留係数（無次元）です。
+次元は括弧内に示します（L = 長さ、T = 時間）。
 """))
 
 # ── 2. Theis solution ────────────────────────────────────────────────────────
-st.header(tr("2. Theis Solution", "2. テイスの解"))
+st.header(tr("2. Theis Solution", "2. タイスの解"))
 col1, col2 = st.columns(2)
 with col1:
     st.latex(r"s(r,t) = \frac{Q}{4\pi T}\, W(u)")
 with col2:
     st.latex(r"u = \frac{r^2 S}{4Tt}")
 st.markdown(tr("""
-**Q** (m³/day) is the pumping rate. **W(u)** is the Theis well function
+**Q** [L³/T] is the pumping rate. **W(u)** is the Theis well function
 (exponential integral E₁):
 """, """
-**Q** (m³/日) は揚水量です。**W(u)** はテイスの井戸関数（指数積分 E₁）です。
+**Q** [L³/T] は揚水量です。**W(u)** はタイスの井戸関数（指数積分 E₁）です。
 """))
 st.latex(r"W(u) = E_1(u) = \int_u^{\infty} \frac{e^{-t}}{t}\, dt")
 
@@ -67,7 +69,7 @@ fig.add_trace(go.Scatter(
 fig.update_layout(
     paper_bgcolor="white", plot_bgcolor="white",
     font=dict(family="Helvetica, Arial, sans-serif", size=17),
-    title=dict(text=tr("Theis Well Function W(u)", "テイスの井戸関数 W(u)"), font=dict(size=22)),
+    title=dict(text=tr("Theis Well Function W(u)", "タイスの井戸関数 W(u)"), font=dict(size=22)),
     xaxis=dict(type="log", title="u", showgrid=True, gridcolor="#e0e0e0",
                title_font=dict(size=19), tickfont=dict(size=16)),
     yaxis=dict(type="log", title="W(u)", showgrid=True, gridcolor="#e0e0e0",
@@ -78,8 +80,8 @@ fig.update_layout(
 )
 plotly_chart_with_print(fig, filename="well-function", use_container_width=True)
 
-# ── 4. Method of Images ──────────────────────────────────────────────────────
-st.header(tr("4. Method of Images", "4. 影像法"))
+# ── 4. Method of Superposition ──────────────────────────────────────────────────────
+st.header(tr("4. Method of Superposition", "4. 重ね合わせ法"))
 st.markdown(tr("""
 Boundary conditions are handled by superposing a **real pumping well** with an
 **image well** mirrored across the boundary. The image well sign determines the
@@ -92,15 +94,15 @@ boundary type:
 
 The distance from the image well to the observation point is:
 """, """
-境界条件は、**実際の揚水井**と、境界を挟んで鏡像の位置に置いた**影像井戸**を重ね合わせて扱います。
-影像井戸の符号によって境界の種類が決まります。
+境界条件は、**実際の揚水井**と、境界を挟んで鏡像の位置に置いた**鏡像井戸（イメージ・ウェル）**を重ね合わせて扱います。
+鏡像井戸の符号によって境界の種類が決まります。
 
-| 境界 | 影像井戸 | 水位低下量への影響 |
+| 境界 | 鏡像井戸 | 水位低下量への影響 |
 |---|---|---|
-| 定水頭境界（河川・湖） | 注水 −Q | 後期にテイス式より小さい |
-| 不透水境界（断層・遮水壁） | 揚水 +Q | 後期にテイス式より大きい |
+| 定水頭境界（河川・湖） | 注水 −Q | 後期にタイス式より小さい |
+| 不透水境界（断層・遮水壁） | 揚水 +Q | 後期にタイス式より大きい |
 
-影像井戸から観測点までの距離は次のとおりです。
+鏡像井戸から観測点までの距離は次のとおりです。
 """))
 st.latex(
     r"r' = \sqrt{(x_{obs} - 2a)^2 + y_{obs}^2}"

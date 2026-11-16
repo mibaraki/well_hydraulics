@@ -74,7 +74,7 @@ col1, col2 = st.columns([2, 1])
 with col1:
     fig = make_loglog_figure(tr("Partial Penetration — Hantush (1961)", "部分貫入井 — Hantush (1961)"))
     add_theis_trace(fig, times, s_theis,
-                    name=tr("Standard Theis (full penetration)", "標準テイス式（完全貫入）"), dash="dot", color="#aaa")
+                    name=tr("Standard Theis (full penetration)", "標準タイス式（完全貫入）"), dash="dot", color="#aaa")
     add_model_trace(fig, times, s_partial,
                     name=tr("Hantush W(u, nπr/b) — partial penetration", "Hantush W(u, nπr/b) — 部分貫入"),
                     color="#9467bd")
@@ -94,7 +94,7 @@ s_theis_show = calc_drawdown(t_show, T, S, r, Q)
 
 df_res = pd.DataFrame({
     tr("Time (min)", "時間 (min)"): t_show,
-    tr("Theis s (m)", "テイス s (m)"): [f"{s:.4f}" for s in s_theis_show],
+    tr("Theis s (m)", "タイス s (m)"): [f"{s:.4f}" for s in s_theis_show],
     tr("Hantush s (m)", "Hantush s (m)"): [f"{s:.4f}" for s in s_part_show],
     tr("Correction (m)", "補正量 (m)"): [f"{sp-st:.4f}" for sp, st in zip(s_part_show, s_theis_show)],
 })

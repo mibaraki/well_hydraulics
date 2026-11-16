@@ -55,7 +55,7 @@ for r_i, Q_i in well_params:
     total += s_i
 
 # ── Chart ────────────────────────────────────────────────────────────────────
-fig = make_loglog_figure(tr("Theis Drawdown — Superposition", "テイス式による水位低下量 — 重ね合わせ"))
+fig = make_loglog_figure(tr("Theis Drawdown — Superposition", "タイス式による水位低下量 — 重ね合わせ"))
 
 for i, s_i in enumerate(individual):
     r_i, Q_i = well_params[i]

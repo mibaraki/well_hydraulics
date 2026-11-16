@@ -14,7 +14,7 @@ import streamlit as st
 from utils.i18n import tr, language_switch
 from utils.license import is_pro_edition, is_pro_page
 
-st.set_page_config(page_title=tr("Theis Groundwater Calculator", "テイス式 地下水計算ツール"),
+st.set_page_config(page_title=tr("Theis Groundwater Calculator", "タイス式 地下水計算ツール"),
                    page_icon="💧", layout="wide")
 
 # (file, English title, Japanese title, icon, url slug)
