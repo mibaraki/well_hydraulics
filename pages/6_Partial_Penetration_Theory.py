@@ -12,6 +12,9 @@ from scipy.special import exp1, k0
 from scipy.integrate import quad
 
 st.set_page_config(page_title="Partial Penetration Theory", page_icon="📚", layout="wide")
+
+from utils.license import require_license
+require_license()   # Pro page: needs a valid license key
 st.title("📚 Partial Penetration — Theory")
 
 # ── 1. Physical Concept ──────────────────────────────────────────────────────

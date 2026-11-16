@@ -13,6 +13,9 @@ from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              plotly_chart_with_print, COLORS, LAYOUT_BASE)
 
 st.set_page_config(page_title="Multiple Wells", page_icon="🔵", layout="wide")
+
+from utils.license import require_license
+require_license()   # Pro page: needs a valid license key
 st.title("🔵 Multiple Wells — Superposition")
 st.markdown(
     "Total drawdown at one observation point from multiple pumping wells, "

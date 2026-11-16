@@ -17,6 +17,10 @@ A multi-page Streamlit app for confined aquifer drawdown analysis based on the
 | 7 Partial Penetration | Calculator | Hantush (1961) full transient solution |
 | 8 Parameter Estimation | Calculator | Least-squares T and S fitting |
 
+## Free and Pro editions
+
+See [LICENSING.md](LICENSING.md). `EDITION=free` (default) hides the pro pages; `EDITION=pro` unlocks them with a signed one-year license key.
+
 ## Installation
 
 ```bash
@@ -44,7 +48,10 @@ All calculator pages accept two-column CSV/TXT files:
 
 ```
 theis_app/
-├── Home.py
+├── Home.py            ← entry point, builds the page list per edition
+├── home_page.py       ← landing page
+├── make_key.py        ← seller tool: create/check license keys (run locally)
+├── LICENSING.md
 ├── requirements.txt
 ├── README.md
 ├── pages/
@@ -59,6 +66,7 @@ theis_app/
 └── utils/
     ├── __init__.py
     ├── theis.py        ← core math (shared by all pages)
+    ├── license.py      ← edition switch, key verification, require_license()
     ├── fitting.py      ← T and S curve fitting (log or linear misfit, multi-start)
     └── plotting.py     ← shared Plotly chart builders and Streamlit widgets
 ```

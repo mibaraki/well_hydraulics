@@ -12,6 +12,9 @@ from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              render_geometry_diagram, plotly_chart_with_print)
 
 st.set_page_config(page_title="No-Flow Barrier", page_icon="🔵", layout="wide")
+
+from utils.license import require_license
+require_license()   # Pro page: needs a valid license key
 st.title("🔵 No-Flow Barrier — Thinning Aquifer")
 st.markdown("""
 An impermeable fault, aquifer pinchout, or valley wall acts as a **no-flow boundary**.

@@ -1,2 +1,6 @@
+# NEVER commit these
+license_private.pem
+keys_issued.csv
+.streamlit/secrets.toml
 __pycache__/
 *.pyc

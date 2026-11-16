@@ -12,6 +12,9 @@ from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              render_geometry_diagram, plotly_chart_with_print)
 
 st.set_page_config(page_title="River Boundary", page_icon="🔵", layout="wide")
+
+from utils.license import require_license
+require_license()   # Pro page: needs a valid license key
 st.title("🔵 River Boundary — Constant-Head")
 st.markdown("""
 A river, lake, or canal acts as a **constant-head boundary**.

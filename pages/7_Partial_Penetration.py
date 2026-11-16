@@ -13,6 +13,9 @@ from utils.plotting import (render_aquifer_sidebar, render_upload_sidebar,
                              render_crosssection_diagram, plotly_chart_with_print)
 
 st.set_page_config(page_title="Partial Penetration", page_icon="🔵", layout="wide")
+
+from utils.license import require_license
+require_license()   # Pro page: needs a valid license key
 st.title("🔵 Partial Penetration — Hantush (1961)")
 st.markdown("""
 Drawdown for a **partially penetrating** pumping well using the full transient
